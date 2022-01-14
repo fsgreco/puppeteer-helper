@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/anonimoconiglio/puppeteer-helper"
   },
-  "keywords": [],
+  "keywords": ["puppeteer", "puppeteer-extra", "crawler", "scraper", "headless", "user-agent", "testing", "headless-chrome"],
   "author": "Santiago Greco <fsgreco@hey.com>",
   "license": "MIT",
   "dependencies": {
