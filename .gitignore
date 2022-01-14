@@ -1,0 +1,12 @@
+# Node_modules
+node_modules
+# For MacOSX
+.DS_Store
+
+# For GNU/Linux 
+.directory
+helpers/accept-g-consent.js
+
+# CUSTOM USER CONFIG VSCODE - per evitare di formattazione automatica del codice altrui
+.vscode/settings.json
+*.code-workspace

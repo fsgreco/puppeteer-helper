@@ -1,0 +1,18 @@
+{
+  "name": "puppeteer-helper",
+  "version": "1.0.0",
+  "description": "Helper functions to use with puppeteer [disclaimer: this is an experimental package]",
+	"type": "module",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anonimoconiglio/puppeteer-helper"
+  },
+  "keywords": [],
+  "author": "Santiago Greco <fsgreco@hey.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/puppeteer": "^5.4.4",
+    "puppeteer": "^13.0.1"
+  }
+}
