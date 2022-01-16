@@ -6,7 +6,7 @@ Helper functions to help you initializate puppeteer sessions [**disclaimer**: th
 
 ### Help you initializing the puppeteer session
 
-This package helps you to inizialize puppeteer with convenient options[^explanation]
+This package helps you to initialize puppeteer with convenient options[^explanation].
 It lift you the burden of config some default options for the browser session, as view port, user agent and default timeout.
 
 Simply import `initBrowserSession` and get your `browser` and `page` element:
@@ -19,22 +19,26 @@ const { browser, page } = await initBrowserSession()
 
 await page.goto('https://www.google.com', { waitUntil: 'networkidle2' })
 
-await page.screenshot({ path: 'test-screenshot.jpg' , type: 'jpeg', fullPage: true })
+await page.screenshot({ path: 'test-screenshot.jpg' , type: 'jpeg' })
 
 await browser.close()
 ```
 
-You can pass two arguments (options) to `initBrowserSession`:
+You can pass some optional arguments to `initBrowserSession`:
 
-* first parameter requires a `boolean`: defines if you want a headless browser or not, **by default it's `true`**
+* first parameter requires an `object`: overrides launch options, **by default it's `{ headless: false }`**
 
-* second parameter requires a `number`: defines the miliseconds of slow motiom, **by default it's `null`**
+* second parameter requires an `array`: overrides browser arguments, **by default it's empty `[]`**
 
-So for example if you want a session to be visibile (not headless) and to operate with 250 miliseconds of slow motion, initialize the browser like this: 
+* third parameter takes a `string`: set custom locale options, **by default it's empty `'en-US'`**
+
+* fourth parameter takes a `boolean`: set a windows user agent, **by default it's empty `false`**
+
+So for example if you want a session to be visibile (not headless) and with italian language browser, initialize the browser like this:
 
 ```js
 //...
-const { browser, page } = await initBrowserSession( false , 250 )
+const { browser, page } = await initBrowserSession( {headless: true}, [], 'it-IT' )
 //...
 ```
 
@@ -70,4 +74,4 @@ Hint's to manage how to wait the load of the page (after the search has been don
 * if it loads a new page wait for navigation: `await page.waitForNavigation({waitUntil: 'networkidle2'})`
 * if it loads ajax request wait for network idle: `await page.waitForNetworkIdle({ idleTime: 500 })`  
 
-[^explanation]: At the moment of writing this is still opinionated (for example puppeteer will initializate on an incognito session and it will set a specific user agent, it will also set italian as language). As I said **this is an experimental package**, it has been done _for educational purposes_. But I will try to improved it by adding the possibility to modify this options in the future. Suggestions are welcome!
+[^explanation]: At the moment of writing this is still opinionated (for example puppeteer will initializate on an incognito session and it will set a specific user agent). As I said **this is an experimental package**, it has been done _for educational purposes_. But I will try to improved it by adding the possibility to modify this options in the future. Suggestions are welcome!

@@ -2,52 +2,66 @@ import puppeteer from "puppeteer"
 
 /**
  * It will inizializate a new session of Puppeteer in incognito mode
- * @param {boolean} headless define if you want a headless browser or not, default = true
- * @param {number} slowMo define miliseconds of slow motion, default = null
+ * @param {{headless:boolean}} puppeteerOptions [optional] - overrides launch options
+ * @param {array} browserArgs [optional] - overrides browser arguments
+ * @param {string} locale [optional] set custom locale options, default = null
+ * @param {boolean} userAgent [optional] defines custom user agent, default = null
  * @returns { Promise <{ browser: puppeteer.Browser, page: puppeteer.Page }> } an object with `browser` and `page` instance
  */
-async function inizializeIncognitoSession(headless = true, slowMo = null) {
-	let width = 1366
-	let height = 768
+async function inizializeIncognitoSession( puppeteerOptions = { headless: true }, browserArgs = [], locale = 'en-US', userAgent = false ) {
 
-	const browser = await puppeteer.launch({ 
-		headless, 
-		slowMo, 
-		ignoreDefaultArgs: ["--enable-automation"],
-		args: ['--incognito', `--window-size=${width},${height}` ] // '--proxy-server=PROXY_SERVER_ADDRESS'
-	});
+	const viewPort = { width: 1366, height: 768 }
+
+	const args = [ 
+		'--incognito',
+		`--window-size=${viewPort.width},${viewPort.height}`,
+		...browserArgs
+	]
+
+	const options = {
+		...puppeteerOptions,
+		ignoreDefaultArgs: [ "--enable-automation" ],
+		args,
+	}
+
+	const browser = await puppeteer.launch(options);
 	const context = await browser.createIncognitoBrowserContext();
 
 	// Create a new page in a pristine context.
 	const page = await context.newPage();
 	await page.setExtraHTTPHeaders({
-		'Accept-Language': 'it'
+		'Accept-Language': `${locale}`
 	});
 	
-	// MOD USER AGENT 
-	let fakeUserAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36'
-	await page.evaluateOnNewDocument((fakeUA) => {
-		delete navigator.__proto__.webdriver;
-		Object.defineProperty(navigator, 'platform', { get: () => 'Win32' });
-		Object.defineProperty(navigator, 'vendor', { get: () => '' });
-		Object.defineProperty(navigator, 'oscpu', { get: () => 'Windows NT 10.0; Win64; x64' });
-		Object.defineProperty(navigator, 'productSub', { get: () => '20100101' });
-		Object.defineProperty(navigator, 'language', { get: () => 'it-IT' });
-		Object.defineProperty(navigator, 'languages', { get: () => ['it-IT','it'] });
+	/* WITH FAKE USER AGENT */
+	if ( userAgent ) {
+		
+		let fakeUserAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36'
 
-		window.open = (...args) => {
-			let newPage = open(...args)
-			Object.defineProperty( newPage.navigator, 'userAgent', { get: () => fakeUA})
-			return newPage
-		}
+		await page.evaluateOnNewDocument((fakeUA) => {
+			delete navigator.__proto__.webdriver;
+			Object.defineProperty(navigator, 'platform', { get: () => 'Win32' });
+			Object.defineProperty(navigator, 'vendor', { get: () => '' });
+			Object.defineProperty(navigator, 'oscpu', { get: () => 'Windows NT 10.0; Win64; x64' });
+			Object.defineProperty(navigator, 'productSub', { get: () => '20100101' });
+			Object.defineProperty(navigator, 'language', { get: () => `${locale}` });
+			Object.defineProperty(navigator, 'languages', { get: () => [`${locale}`] });
 
-		window.open.toString = () => 'function open() { [native code] }'
-	}, fakeUserAgent)
-	await page.setUserAgent(fakeUserAgent)
+			window.open = (...args) => {
+				let newPage = open(...args)
+				Object.defineProperty( newPage.navigator, 'userAgent', { get: () => fakeUA})
+				return newPage
+			}
 
-	await page.setViewport({ width, height })
+			window.open.toString = () => 'function open() { [native code] }'
+		}, fakeUserAgent)
+		await page.setUserAgent(fakeUserAgent)
+	}
+
+
+	await page.setViewport({ width: viewPort.width, height: viewPort.height })
 	
-	if ( headless ) {
+	if ( puppeteerOptions.headless ) {
 		await page.setRequestInterception(true)
 		page.on("request", request => {
 			if (['image', 'stylesheet', 'font'].includes(`${request.resourceType()}`)) request.abort()
