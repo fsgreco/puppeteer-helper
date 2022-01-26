@@ -1,3 +1,5 @@
+import procrastinate from './procrastinate.js'
+
 /**
  * It iterate pages by clicking on `nextPageSelector` => in every page it applies querySelectorAll to find elements that match `singleItemSelector` => on every element founded it evaluates the `evalCallback` and then pass the result to `manageItemFn`.
  * When there is no element to click any more it stops returning void.
@@ -17,7 +19,6 @@ async function iterateSingleElements( page, selectors, evalCallback, manageItemF
   await Promise.all( listOfItems.map( async singleItemElHandle => {
     let item = await singleItemElHandle.evaluate( evalCallback )
     await manageItemFn(item)
-    // console.log(`inserted ${item.title} in the DB.`)
   }))
 
   await procrastinate(page)
@@ -30,7 +31,6 @@ async function iterateSingleElements( page, selectors, evalCallback, manageItemF
   } catch (error) {
     return
   }
-
   return await iterateSingleElements( page, selectors, evalCallback, manageItemFn )  
 }
 
