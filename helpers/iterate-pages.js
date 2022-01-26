@@ -8,27 +8,25 @@
  */
 async function iteratePages( browserTab, callBack, nextPageSelector, itemsArray = [] ) {
 
-	// FIRST ITERATION (evaluate the callBack for first time)
+	// FIRST ITERATION
 	if (itemsArray.length === 0 ) {
 		itemsArray = await browserTab.evaluate( callBack )
+
+	} else { // NEXT ITERATIONS
+		let newItems = await browserTab.evaluate( callBack )
+		itemsArray = [ ...itemsArray, ...newItems ]
 	}
+
 
 	const nextPageElement = await browserTab.$( nextPageSelector )
 	if ( !nextPageElement ) return itemsArray
-
-	// NEXT ITERATIONS (nextPage exist - goes/click there - merge items - iterate)
-
-	/* const href = await nextPageElement.evaluate( nextP => nextP.href )
-	await browserTab.goto( href, { waitUntil: 'networkidle2' }) */
 
 	await Promise.all([
 		browserTab.waitForNavigation({ waitUntil: 'networkidle2' }),
 		browserTab.click(nextPageSelector),
 	]);
-
-	let newItems = await browserTab.evaluate( callBack )
-	
-	itemsArray = [ ...itemsArray, ...newItems ]
+	// const href = await nextPageElement.evaluate( nextP => nextP.href )
+	// await browserTab.goto( href, { waitUntil: 'networkidle2' }) 
 
 	return await iteratePages( browserTab, callBack, nextPageSelector, itemsArray )
 }
