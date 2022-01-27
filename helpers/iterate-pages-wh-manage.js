@@ -26,11 +26,16 @@ async function iterateSingleElements( page, selectors, evalCallback, manageItemF
   try {
     let nextButton = await page.waitForSelector(nextPageSelector, { timeout: 30000 })
     await nextButton.click()
-    await page.waitForNetworkIdle({ idleTime: 500 })
+    // await page.waitForNetworkIdle({ idleTime: 500 })
+    await Promise.race([
+			page.waitForSelector(singleItemSelector),
+			page.waitForSelector(nextPageSelector),
+		]);
     
   } catch (error) {
     return
   }
+  await procrastinate(page)
   return await iterateSingleElements( page, selectors, evalCallback, manageItemFn )  
 }
 
