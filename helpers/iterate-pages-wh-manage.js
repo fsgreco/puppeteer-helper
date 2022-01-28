@@ -21,6 +21,7 @@ async function iterateSingleElements( page, selectors, evalCallback, manageItemF
       let item = await singleItemElHandle.evaluate( evalCallback )
       await manageItemFn(item)
     }))
+    console.log(`Managed ${listOfItems.length} items.`)
   } catch(err) { console.log(`Error handling the item: ${err.message}`)}
 
   await procrastinate(page)
