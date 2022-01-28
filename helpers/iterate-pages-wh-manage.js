@@ -15,11 +15,13 @@ async function iterateSingleElements( page, selectors, evalCallback, manageItemF
   const { singleItemSelector, nextPageSelector } = selectors
   const listOfItems = await page.$$(singleItemSelector)
 
-  /* Since there is a .map with async function in it you need a Promise.all to wait all the map iterations to finish  */
-  await Promise.all( listOfItems.map( async singleItemElHandle => {
-    let item = await singleItemElHandle.evaluate( evalCallback )
-    await manageItemFn(item)
-  }))
+  try {
+    /* Since there is a .map with async function in it you need a Promise.all to wait all the map iterations to finish  */
+    await Promise.all( listOfItems.map( async singleItemElHandle => {
+      let item = await singleItemElHandle.evaluate( evalCallback )
+      await manageItemFn(item)
+    }))
+  } catch(err) { console.log(`Error handling the item: ${err.message}`)}
 
   await procrastinate(page)
 
@@ -36,6 +38,8 @@ async function iterateSingleElements( page, selectors, evalCallback, manageItemF
     return
   }
   await procrastinate(page)
+  await page.waitForTimeout(1000)
+
   return await iterateSingleElements( page, selectors, evalCallback, manageItemFn )  
 }
 
