@@ -75,3 +75,23 @@ Hint's to manage how to wait the load of the page (after the search has been don
 * if it loads ajax request wait for network idle: `await page.waitForNetworkIdle({ idleTime: 500 })`  
 
 [^explanation]: At the moment of writing this is still opinionated (for example puppeteer will initializate on an incognito session and it will set a specific user agent). As I said **this is an experimental package**, it has been done _for educational purposes_. But I will try to improved it by adding the possibility to modify this options in the future. Suggestions are welcome!
+
+## Simple login
+
+If you need to login to a common login page (that has user and password input, and then a button), you can use `simpleLogin` helper. You only need to provide the page, an object with the 3 selectors mentioned above, and then the credentials (another object with `username` and `password`). Here is a complete example:
+
+```js
+import { simpleLogin } from 'puppeteer-helpers'
+//...
+
+let username = process.env.USER_NAME
+let password = process.env.USER_PASSWORD
+
+let loginSelectors = {
+  user:'input#username',
+  pass:'input#password',
+  button:'input#enterButton'
+}
+
+await simpleLogin(page, loginSelectors, { username, password })
+```
