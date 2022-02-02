@@ -56,7 +56,7 @@ await procrastinate(page)
 
 ## Search String
 
-Search string will find the input string (based on theField selector passed), then type the string to be searched and finally it will press Enter. 
+Search string will find the input string (based on theField selector passed), then type the string to be searched and finally it will press Enter.
 
 ```js
 //...
@@ -78,20 +78,22 @@ Hint's to manage how to wait the load of the page (after the search has been don
 
 ## Simple login
 
-If you need to login to a common login page (that has user and password input, and then a button), you can use `simpleLogin` helper. You only need to provide the page, an object with the 3 selectors mentioned above, and then the credentials (another object with `username` and `password`). Here is a complete example:
+If you need to login to a common login page (that has common inputs: `userInput` and `passwordInput`), you can use `prepareToLogin` helper.
+
+First prepare to login providing the `page` object, an object with the 2 selectors mentioned above.
+And finally you can login providing only the the respective credentials (another object with `username` and `password`).
+
+Here is a complete example (notice that only the last `login` function returns a Promise):
 
 ```js
-import { simpleLogin } from 'puppeteer-helpers'
+import { prepareToLogin } from 'puppeteer-helpers'
 //...
+
+let userInput = 'input#username'
+let passInput = 'input#password'
+const login = prepareToLogin( page, { userInput, passInput })
 
 let username = process.env.USER_NAME
 let password = process.env.USER_PASSWORD
-
-let loginSelectors = {
-  user:'input#username',
-  pass:'input#password',
-  button:'input#enterButton'
-}
-
-await simpleLogin(page, loginSelectors, { username, password })
+await login({ username, password })
 ```
