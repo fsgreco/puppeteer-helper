@@ -23,7 +23,7 @@ const prepareToLogin = (page, selectors) => {
 		await password.type(credentials.password, { delay: 120 })
 
 		await page.focus(passInput)
-		return Promise.allSettled([ // since it waitForNetworkIddle I use `allSettled` instead of `all` - to inspect potential errors better
+		return await Promise.allSettled([ // since it waitForNetworkIddle I use `allSettled` instead of `all` - to inspect potential errors better
 			page.keyboard.press('Enter'),
 			page.waitForNetworkIdle({ idleTime: 1500 })
 		])
