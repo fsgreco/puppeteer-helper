@@ -20,10 +20,10 @@
   ],
   "author": "Santiago Greco <fsgreco@hey.com>",
   "license": "MIT",
-  "dependencies": {
-    "puppeteer": "^13.0.1"
-  },
   "devDependencies": {
     "@types/puppeteer": "^5.4.4"
+  },
+  "peerDependencies": {
+    "puppeteer": "^13.4.0"
   }
 }
