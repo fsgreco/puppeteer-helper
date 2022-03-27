@@ -19,4 +19,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Notify me on Telegram
-        run: curl -s --data-urlencode "chat_id=${{ secrets.CHAT_ID }}" --data-urlencode "text=Launched `npm publish` for *puppeteer-helper* package" ${{ secrets.API_TELEGRAM_URL }} > /dev/null
+        run: curl -s --data-urlencode "chat_id=${{ secrets.CHAT_ID }}" --data-urlencode "text=Launched _npm publish_ action for *puppeteer-helper*" ${{ secrets.API_TELEGRAM_URL }} > /dev/null
