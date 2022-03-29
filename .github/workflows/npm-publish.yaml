@@ -7,16 +7,16 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
+    
       - name: Checkout project
         uses: actions/checkout@v1
+        
       - name: Publish on npm
+        id: publish-npm
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
-  
-  notify:
-    needs: publish 
-    runs-on: ubuntu-latest
-    steps:
-      - name: Notify me on Telegram
-        run: curl -s --data-urlencode "chat_id=${{ secrets.CHAT_ID }}" --data-urlencode "text=Launched _npm publish_ action for *puppeteer-helper*" ${{ secrets.API_TELEGRAM_URL }} > /dev/null
+        
+      - name: Notify new version
+        if: steps.publish-npm.outputs.type != 'none'
+        run: curl -s -d "chat_id=${{ secrets.CHAT_ID }}" -d "text=📦 *puppeteer-helper*:%0A✔️ New version v${{ steps.publish-npm.outputs.version }}" ${{ secrets.API_TELEGRAM_URL }} > /dev/null
