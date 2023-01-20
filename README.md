@@ -97,3 +97,25 @@ let username = process.env.USER_NAME
 let password = process.env.USER_PASSWORD
 await login({ username, password })
 ```
+
+## Perform basic action at an URL
+
+If you have a function that needs to be runned on the DOM of the page to scrape some data, you can use `performActionAtUrl` method by simply passing two arguments: the `url` to be scraped (as a string) and the callback it should run in the DOM. Beware it is expected that your callback returns something (an Array, or an Object or just simply Null).
+
+```js
+import { performActionAtUrl } from 'puppeteer-helper'
+
+/**
+ * This is the callback that will be runned inside the DOM of the targetUrl
+ * @returns the string from the page 
+ */
+let myCallback = () => document.querySelector('.some-className')?.textContent 
+
+let targetURL = 'https://your-target-url.tld'
+
+const results = await performActionAtUrl(targetURL, myCallback )
+
+console.log(results)
+```
+This function does not need a `page` object, it will take care to open a page for you, execute the function, close the browser and get you the results of your callback.
+
