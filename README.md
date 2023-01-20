@@ -119,6 +119,31 @@ console.log(results)
 ```
 This function does not need a `page` object, it will take care to open a page for you, execute the function, close the browser and get you the results of your callback.
 
+### Get AMZ Products Information [experimental]
+
+A further abstraction of `performActionAtUrl` is the new method `getAmzProductInfo`:  
+You only need to pass the url of the product and the lib will take care of everything else.  
+There is a callback already in place that will extract an object with `title`, `price`, `seller` and `shippedBy` properties:
+```js
+import { getAmzProductInfo } from 'puppeteer-helper'
+
+let amzUrl = 'https://www.your-amz-link/the-product-uri/ecc'
+
+let amzProd = await getAmzProductInfo(amzUrl)
+
+console.table(amzProd)
+```
+Output example: 
+```console
+┌───────────┬─────────────────────────────────────────────────────┐
+│  (index)  │                       Values                        │
+├───────────┼─────────────────────────────────────────────────────┤
+│   title   │    'Amz Basics Dynamic Vocal Microphone – Cardioid' │
+│   price   │                      '$29.80'                       │
+│  seller   │                       'Amz'                         │
+│ shippedBy │                       'Amz'                         │
+└───────────┴─────────────────────────────────────────────────────┘
+```
 ---
 
 ## Iterate functions [Highly Experimental]
