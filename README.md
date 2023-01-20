@@ -119,3 +119,36 @@ console.log(results)
 ```
 This function does not need a `page` object, it will take care to open a page for you, execute the function, close the browser and get you the results of your callback.
 
+---
+
+## Iterate functions [Highly Experimental]
+
+When dealing with listings that are paginated you can iterate through pages with `iteratePages` method.  
+It takes the `page` object, the `callback` you want to execute in the DOM (it need to return a list of objects) and the `nextPageSelector` to click and iterate the callback. The function will return an array of items (objects).
+
+```js
+import { iteratePages } from 'puppeteer-helper'
+// ...
+let nextPageSelector = '[data-paginate="pagination"] nav > button:not([disabled])' 
+let items = await iteratePages( page, callback, nextPageSelector )
+```
+
+### Managing the objects 
+
+The same as `iteratePages` but it will manage the items directly.   
+It takes the `page`, the `selectors` object (that contain the `singleItemSelector` and the `nextPageSelector`).  
+The `singleItemSelector` will be used to select **all** the items that match that selector (on every singe page).  
+This items will be handled with the `callback` on the DOM, it will return an object.  
+Every single object scraped will be managed by the `manageItemFn` (for example added instantly to a DB).  
+The function returns itself and run again until no more `nextPageSelector` is matched.  
+
+```js
+import { iterateSingleElements } from 'puppeteer-helper'
+// ...
+let selectors = {
+	singleItemSelector: '[data-item="property-card"]',
+	nextPageSelector: '[data-paginate="pagination"] nav > button:not([disabled])' 
+}
+await iteratePagesAndManageItem( page, selectors, callback, manageItemFn )
+```
+---
