@@ -45,7 +45,9 @@ const { browser, page } = await initBrowserSession( {headless: true}, [], 'it-IT
 ## Procrastinate
 
 You can also tell the browser to `procrastinate` in the page a little bit. 
-It will wait some time, aproximately between 0,3s ~ 1,1s; it also scrolls a bit, between 200 and 100 px.
+It will wait some time, aproximately between 0,3s ~ 1,1s; 
+then it also scrolls a bit, between 200 and 100 px; 
+and finally it simulate a mouse movement, between 100px horizontally and 200px vertically. 
 
 ```js
 import { procrastinate } from 'puppetter-helper'
