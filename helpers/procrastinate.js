@@ -9,8 +9,11 @@ const procrastinateBrowser = async page => {
 	let waitTime = Math.floor(Math.random() * (1100 - 300) + 300)
 	await page.waitForTimeout(waitTime)
 
-	// Scrolla una distanza tra 200 o 100 px
+	// Scroll a distanze between 200 or 100 px
 	await page.evaluate(`window.scroll(0, Math.floor(Math.random() * (200 - 100) + 100))`)
+	
+	// Random mouse movement via CDP method
+	await page.mouse.move(100, Math.floor(Math.random() * (200 - 100) + 100) )
 
 	return
 }
